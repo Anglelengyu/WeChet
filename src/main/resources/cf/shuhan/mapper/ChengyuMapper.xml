@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cf.shuhan.mapper.ChengyuMapper">
+    <!--
+    namespace:名称空间;指定为接口的全类名
+    id：唯一标识
+    resultType：返回值类型
+    #{id}：从传递过来的参数中取出id值
+
+    public Employee getEmpById(Integer id);
+     -->
+    <select id="getChengyuByName" resultType="cf.shuhan.domain.Chengyu">
+		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom SUBSTRING(word,4) = #{lastName}
+	</select>
+    <select id="getOneByrand" resultType="cf.shuhan.domain.Chengyu">
+		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom ORDER BY RAND() LIMIT 1
+	</select>
+    <select id="getOneByWord" resultType="cf.shuhan.domain.Chengyu">
+		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom where word = #{word}
+	</select>
+</mapper>
