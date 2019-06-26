@@ -12,7 +12,7 @@
     public Employee getEmpById(Integer id);
      -->
     <select id="getChengyuByName" resultType="cf.shuhan.domain.Chengyu">
-		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom SUBSTRING(word,4) = #{lastName}
+		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom where SUBSTRING(word,1,1) = #{lastName}
 	</select>
     <select id="getOneByrand" resultType="cf.shuhan.domain.Chengyu">
 		select word , pinyin , abbreviation , derivation , explanation , example from bas_idiom ORDER BY RAND() LIMIT 1

@@ -93,4 +93,19 @@ public class WeatherUtil {
 
         return weatherInfo;
     }
+    /**
+     * 获取天气
+     */
+    public static String gettianqi(String city){
+        if (city.equals("天气")){
+            //默认为成都天气
+            WeatherInfo weather = WeatherUtil.GetWeather(WeatherUtil.GetWeatherData("成都"));
+            return weather.getCityname()+":"+weather.getDate()+","+weather.getWeather()+","+weather.getTemperature()+","
+                    +weather.getFengli();
+        }
+        //天气
+        WeatherInfo weather = WeatherUtil.GetWeather(WeatherUtil.GetWeatherData(city.substring(0,city.length()-2)));
+        return weather.getCityname()+":"+weather.getDate()+","+weather.getWeather()+","+weather.getTemperature()+","
+                +weather.getFengli();
+    }
 }

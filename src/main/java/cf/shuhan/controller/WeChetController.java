@@ -2,8 +2,9 @@ package cf.shuhan.controller;
 
 import cf.shuhan.domain.Chengyu;
 import cf.shuhan.domain.UserInfo;
-import cf.shuhan.domain.WeatherInfo;
 import cf.shuhan.mapper.ChengyuMapper;
+import cf.shuhan.utils.DateUtil;
+import cf.shuhan.utils.JokUtil;
 import cf.shuhan.utils.MyBatisUtil;
 import cf.shuhan.utils.WeatherUtil;
 import cn.zhengzhanpeng.itchat4j.api.WechatTools;
@@ -14,10 +15,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.session.SqlSession;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,34 +36,18 @@ public class WeChetController implements IMsgHandlerFace {
         userInfos.forEach(e->{
             userMap.put(e.getUserName(),e.getNickName());
         });
-        if (userMap.containsKey(baseMsg.getFromUserName())&&"蓬中高中同学群".equals(userMap.get(baseMsg.getFromUserName()))){
+        if ((userMap.containsKey(baseMsg.getFromUserName())&&"E213".equals(userMap.get(baseMsg.getFromUserName())))||(userMap.containsKey(baseMsg.getToUserName())&&"E213".equals(userMap.get(baseMsg.getToUserName())))){
+            //笑话
+            if (baseMsg.getText().contains("笑话")){
+                return JokUtil.getJok();
+            }
             //算时间
             if (baseMsg.getText().startsWith("日期")){
-                String date = baseMsg.getText().replaceAll("日期", "").replaceAll("：",":");
-                String shijian = date.substring(date.indexOf(":") + 1);
-                String wenben = date.substring(0,date.indexOf(":"));
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String dstr = shijian.replaceAll("年","-").replaceAll("月","-").replaceAll("日","");
-                try {
-                    Date riqi = sdf.parse(dstr);
-                    int tian = (int) ((System.currentTimeMillis() - riqi.getTime()) / 1000 / 60 / 60 / 24);
-                    return "恭喜你"+wenben+"已经"+tian+"天了";
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                return DateUtil.getDate(baseMsg.getText());
             }
             //天气预报
             if (baseMsg.getText().endsWith("天气")){
-                if (baseMsg.getText().equals("天气")){
-                    //默认为成都天气
-                    WeatherInfo weather = WeatherUtil.GetWeather(WeatherUtil.GetWeatherData("成都"));
-                    return weather.getCityname()+":"+weather.getDate()+","+weather.getWeather()+","+weather.getTemperature()+","
-                            +weather.getFengli();
-                }
-                //天气
-                WeatherInfo weather = WeatherUtil.GetWeather(WeatherUtil.GetWeatherData(baseMsg.getText().substring(0,baseMsg.getText().length()-2)));
-                return weather.getCityname()+":"+weather.getDate()+","+weather.getWeather()+","+weather.getTemperature()+","
-                        +weather.getFengli();
+                return WeatherUtil.gettianqi(baseMsg.getText());
             }
             SqlSession sqlession = null;
             try {
